@@ -14,10 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    private static final Random RANDOM = new Random();
 
     @Autowired
     private UserService userService;
@@ -194,10 +198,9 @@ public class UserController {
         int length = 8;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();
-        Random random = new Random();
 
         for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
+            int index = RANDOM.nextInt(characters.length());
             password.append(characters.charAt(index));
         }
         return password.toString();

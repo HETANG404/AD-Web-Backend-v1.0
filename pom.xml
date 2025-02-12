@@ -121,7 +121,7 @@
                 </executions>
                 <configuration>
                     <effort>Max</effort> <!-- 设置分析力度为最大 -->
-                    <threshold>Low</threshold> <!-- 设置报告最低阈值为低级 -->
+                    <threshold>High</threshold> <!-- 设置报告最低阈值为低级 -->
                     <xmlOutput>true</xmlOutput> <!-- 输出 XML 格式报告 -->
                     <outputDirectory>target</outputDirectory> <!-- 输出目录为 target -->
                     <plugins>
