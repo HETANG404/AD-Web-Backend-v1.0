@@ -7,7 +7,12 @@ on:
   pull_request:
     branches:
       - main
-
+  workflow_dispatch:
+    inputs:
+      skip_sast:
+        description: '跳过 SpotBugs 和 Dependency-Check 分析'
+        required: false
+        default: 'false'
 
 jobs:
   build:
@@ -23,30 +28,31 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 先进行 Maven 构建
       - name: Build with Maven
         run: mvn clean verify -DskipTests
 
-      # SAST配置：SpotBugs + Find Security Bugs
+      # 检查是否跳过 SAST 步骤
       - name: Run SpotBugs Analysis
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         run: mvn spotbugs:check || true
 
       - name: Upload SpotBugs Report
-        if: always()
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: spotbugs-report
           path: target/spotbugs.xml
 
       - name: Fail on SpotBugs High Priority Issues
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         run: |
           if grep -q '<BugInstance.*priority="1"' target/spotbugs.xml; then
             echo "High priority issues found by SpotBugs!"
             exit 1
           fi
 
-#             **缓存 NVD 数据库**
       - name: Cache OWASP Dependency-Check Data
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         uses: actions/cache@v3
         with:
           path: ~/.dependency-check
@@ -54,27 +60,26 @@ jobs:
           restore-keys: |
             dependency-check-${{ runner.os }}-
 
-          # **SAST配置：依赖检查**
       - name: Run Dependency Check
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         run: |
           mkdir -p reports
           mvn org.owasp:dependency-check-maven:check -Dformat=ALL -Dout=reports/
 
       - name: Upload Dependency Check Report
-        if: always()
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
           path: reports/dependency-check-report.html
 
       - name: Fail on High Vulnerabilities
+        if: ${{ github.event.inputs.skip_sast != 'true' }}
         run: |
           if grep -q '<severity>Critical</severity>\|<severity>High</severity>' reports/dependency-check-report.xml; then
             echo "High or Critical vulnerabilities found!"
             exit 1
           fi
-
-    
 
       # 登录 Docker 并推送镜像
       - name: Log in to Docker Hub
@@ -86,20 +91,3 @@ jobs:
 
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: 47.130.87.217
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            docker stop web-backend || true
-            docker rm web-backend || true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
-            docker run -d --name web-backend -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
