@@ -29,7 +29,7 @@ jobs:
 #      # SAST配置：SpotBugs + Find Security Bugs
       - name: Run SpotBugs Analysis
 #        run: mvn spotbugs:check || true
-        run: mvn spotbugs:spotbugs
+        run: mvn clean install spotbugs:spotbugs verify
 
       - name: Upload SpotBugs Report
         if: always()
@@ -48,19 +48,13 @@ jobs:
             echo "✅ No high priority issues found by SpotBugs."
           fi
 
-      - name: Build and Package Spring Boot Application
-        run: mvn clean package -DskipTests
 
-      - name: Deploy Application
+      - name: Fail on SpotBugs High Priority Issues
         run: |
-          echo "Deploying Spring Boot application..."
-
-#      - name: Fail on SpotBugs High Priority Issues
-#        run: |
-#          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
-#            echo "High priority issues found by SpotBugs!"
-#            exit 1
-#          fi
+          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
+            echo "High priority issues found by SpotBugs!"
+            exit 1
+          fi
 
       # 缓存 NVD 数据库
       # - name: Cache OWASP Dependency-Check Data
