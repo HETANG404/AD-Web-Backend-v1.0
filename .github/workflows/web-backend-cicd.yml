@@ -82,10 +82,10 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t web-backend:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/web-backend:latest .
 
       - name: Push Docker Image
-        run: docker push web-backend:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
 
   deploy:
     needs: build
@@ -94,7 +94,7 @@ jobs:
     steps:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
-#        d
+        #        d
         with:
           host: 47.130.87.217
           username: ${{ secrets.EC2_USER }}
@@ -105,5 +105,6 @@ jobs:
             docker rmi -f web-backend || true
             sleep 10
             docker pull web-backend:latest
-            docker run -d --name web-backend -p 5000:5000 web-backend:latest
+    #            docker run -d --name web-backend -p 5000:5000 web-backend:latest
+            docker run -d --name web-backend -p 5000:5000 --restart always web-backend:latest
 #            docker start web-backend:latest
