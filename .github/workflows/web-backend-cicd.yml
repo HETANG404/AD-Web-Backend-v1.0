@@ -38,23 +38,31 @@ jobs:
           name: spotbugs-report
           path: target/spotbugsXml.xml
 
-      - name: Check for High Priority Issues in SpotBugs Report
+      - name: Check for SpotBugs Issues
         run: |
-          if grep -q '<BugInstance[^>]* priority="1"' target/spotbugsXml.xml; then
-            echo "❌ High priority issues found by SpotBugs!"
-            grep '<BugInstance[^>]* priority="1"' target/spotbugsXml.xml
+          if [ ! -f target/spotbugsXml.xml ]; then
+            echo "⚠️ SpotBugs report not found, skipping check."
+            exit 0
+          fi
+          # 输出所有 BugInstance
+          ERROR_COUNT=$(grep -o '<BugInstance' target/spotbugsXml.xml | wc -l)
+          if [ "$ERROR_COUNT" -gt 0 ]; then
+            echo "❌ Found $ERROR_COUNT issues in SpotBugs report:"
+            grep '<BugInstance' target/spotbugsXml.xml | while read -r line; do
+              echo "$line"
+            done
             exit 1
           else
-            echo "✅ No high priority issues found by SpotBugs."
+            echo "✅ No issues found by SpotBugs."
           fi
 
 
-      - name: Fail on SpotBugs High Priority Issues
-        run: |
-          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
-            echo "High priority issues found by SpotBugs!"
-            exit 1
-          fi
+#      - name: Fail on SpotBugs High Priority Issues
+#        run: |
+#          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
+#            echo "High priority issues found by SpotBugs!"
+#            exit 1
+#          fi
 
       # 缓存 NVD 数据库
       # - name: Cache OWASP Dependency-Check Data
