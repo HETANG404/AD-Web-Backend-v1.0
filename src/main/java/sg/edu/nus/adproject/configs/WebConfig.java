@@ -13,7 +13,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http//47.130.87.217:7070","http://47.130.87.217:3000") // Allow all origins
+//                        .allowedOrigins("http//47.130.87.217:7070","http://47.130.87.217:3000") // Allow all origins
+                        .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
