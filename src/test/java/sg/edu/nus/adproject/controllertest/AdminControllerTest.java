@@ -88,7 +88,7 @@ class AdminControllerTest {
                         .content("{\"username\":\"admin\",\"password\":\"password\"}"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.message").value("Incorrect password!"));
+                .andExpect(jsonPath("$.message").value("Incorrect username or password"));
 
         verify(adminService, times(1)).userExists(username);
         verify(adminService, times(1)).authenticate(username, password);

@@ -52,18 +52,34 @@ public class AdminController {
         boolean userExists = adminService.userExists(username);
         boolean authenticated = adminService.authenticate(username, password);
 
-
-        if (!authenticated || !userExists) {
-            if (authenticated) {
-                response.put("success", false);
-                response.put("message", "Incorrect password!");  // 统一错误信息
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            } else if (userExists) {
-                response.put("success", false);
-                response.put("message", "Incorrect password!");  // 统一错误信息
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-            }
+        if (!authenticated && userExists) {
+            response.put("success", false);
+            response.put("message", "Incorrect username or password");  // 密码错误
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+
+        if (!userExists) {
+            response.put("success", false);
+            response.put("message", "Username does not exist!");  // 用户名不存在
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+
+
+//        if (!authenticated || !userExists) {
+//            if (authenticated) {
+//                response.put("success", false);
+//                response.put("message", "Incorrect password!");  // 统一错误信息
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//            } else if (userExists) {
+//                response.put("success", false);
+//                response.put("message", "Incorrect username or password");  // 统一错误信息
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//            }
+//            response.put("success", false);
+//            response.put("message", "Username does not exist!");  // 统一错误信息
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//        }
 
 
         // Login successful
@@ -84,6 +100,24 @@ public class AdminController {
         response.put("success", true);
         response.put("message", "Logged out successfully.");
         return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/protected-endpoint")
+    public ResponseEntity<Map<String, Object>> protectedEndpoint(HttpSession session) {
+        // 检查会话中是否存在已登录的用户
+        if (session.getAttribute("loggedInUser") == null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Please log in to access this resource"); // 用户未登录
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);  // 返回 401 状态码
+        }
+
+        // 这里是用户已登录的处理逻辑
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "You have access to the protected resource");
+        return ResponseEntity.ok(response);  // 返回 200 状态码，表示成功
     }
 }
 //......
