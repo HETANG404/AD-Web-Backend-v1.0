@@ -22,6 +22,8 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+
+
       - name: Run Tests and Generate Coverage Report
         run: mvn clean test verify
 
