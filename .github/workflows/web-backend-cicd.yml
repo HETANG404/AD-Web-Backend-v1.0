@@ -24,7 +24,7 @@ jobs:
 
       # 先进行 Maven 构建
       - name: Build with Maven
-        run: mvn clean package -DskipTests
+        run: mvn clean verify -DskipTests
 
       # SAST配置：SpotBugs + Find Security Bugs
       - name: Run SpotBugs Analysis
