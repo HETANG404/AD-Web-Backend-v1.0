@@ -138,13 +138,13 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>4.8.3.0</version>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal> &lt;!&ndash; 执行 SpotBugs 检查 &ndash;&gt;-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>verify</goal> <!-- 执行 SpotBugs 检查 -->
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <effort>Max</effort> <!-- 设置分析力度为最大 -->
                     <threshold>High</threshold> <!-- 设置报告最低阈值为低级 -->
