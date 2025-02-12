@@ -145,19 +145,19 @@
 <!--                        </goals>-->
 <!--                    </execution>-->
 <!--                </executions>-->
-<!--                <configuration>-->
-<!--                    <effort>Max</effort> &lt;!&ndash; 设置分析力度为最大 &ndash;&gt;-->
-<!--                    <threshold>High</threshold> &lt;!&ndash; 设置报告最低阈值为低级 &ndash;&gt;-->
-<!--                    <xmlOutput>true</xmlOutput> &lt;!&ndash; 输出 XML 格式报告 &ndash;&gt;-->
-<!--                    <outputDirectory>target</outputDirectory> &lt;!&ndash; 输出目录为 target &ndash;&gt;-->
-<!--                    <plugins>-->
-<!--                        <plugin>-->
-<!--                            <groupId>com.h3xstream.findsecbugs</groupId>-->
-<!--                            <artifactId>findsecbugs-plugin</artifactId>-->
-<!--                            <version>1.13.0</version> &lt;!&ndash; 配置 FindSecBugs 插件 &ndash;&gt;-->
-<!--                        </plugin>-->
-<!--                    </plugins>-->
-<!--                </configuration>-->
+                <configuration>
+                    <effort>Max</effort> <!-- 设置分析力度为最大 -->
+                    <threshold>High</threshold> <!-- 设置报告最低阈值为低级 -->
+                    <xmlOutput>true</xmlOutput> <!-- 输出 XML 格式报告 -->
+                    <outputDirectory>target</outputDirectory> <!-- 输出目录为 target -->
+                    <plugins>
+                        <plugin>
+                            <groupId>com.h3xstream.findsecbugs</groupId>
+                            <artifactId>findsecbugs-plugin</artifactId>
+                            <version>1.13.0</version> <!-- 配置 FindSecBugs 插件 -->
+                        </plugin>
+                    </plugins>
+                </configuration>
             </plugin>
 
 <!--            &lt;!&ndash; Dependency-Check Plugin &ndash;&gt;-->
