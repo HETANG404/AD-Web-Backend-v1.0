@@ -106,6 +106,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+<!--            1123-->
 
             <!-- SpotBugs Plugin -->
             <plugin>
