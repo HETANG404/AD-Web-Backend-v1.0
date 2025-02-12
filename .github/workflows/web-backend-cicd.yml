@@ -102,9 +102,9 @@ jobs:
           script: |
             docker stop web-backend || true
             docker rm web-backend || true
-            docker rmi -f web-backend || true
+            docker rmi -f ${{ secrets.DOCKER_USERNAME }}/web-backend || true
             sleep 10
             docker pull web-backend:latest
     #            docker run -d --name web-backend -p 5000:5000 web-backend:latest
             docker run -d --name web-backend -p 5000:5000 --restart always web-backend:latest
-#            docker start web-backend:latest
+            docker start web-backend:latest
