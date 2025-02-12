@@ -22,9 +22,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 先进行 Maven 构建
-      - name: Build with Maven
-        run: mvn clean verify -DskipTests
 
 #      # SAST配置：SpotBugs + Find Security Bugs
       - name: Run SpotBugs Analysis
@@ -57,12 +54,6 @@ jobs:
           fi
 
 
-#      - name: Fail on SpotBugs High Priority Issues
-#        run: |
-#          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
-#            echo "High priority issues found by SpotBugs!"
-#            exit 1
-#          fi
 
       # 缓存 NVD 数据库
       # - name: Cache OWASP Dependency-Check Data
@@ -92,6 +83,11 @@ jobs:
       #       echo "High or Critical vulnerabilities found!"
       #       exit 1
       #     fi
+
+
+      # 先进行 Maven 构建
+      - name: Build with Maven
+        run: mvn clean verify -DskipTests
 
       # 登录 Docker 并推送镜像
       - name: Log in to Docker Hub
