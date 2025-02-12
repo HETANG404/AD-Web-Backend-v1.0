@@ -45,20 +45,36 @@ jobs:
             exit 1
           fi
 
-      # SAST配置：依赖检查
+#             **缓存 NVD 数据库**
+      - name: Cache OWASP Dependency-Check Data
+        uses: actions/cache@v3
+        with:
+          path: ~/.dependency-check
+          key: dependency-check-${{ runner.os }}-${{ hashFiles('**/dependency-check.properties') }}
+          restore-keys: |
+            dependency-check-${{ runner.os }}-
+
+          # **SAST配置：依赖检查**
+      - name: Run Dependency Check
+        run: |
+          mkdir -p reports
+          mvn org.owasp:dependency-check-maven:check -Dformat=ALL -Dout=reports/
+
       - name: Upload Dependency Check Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-check-report
-          path: target/dependency-check-report.html
+          path: reports/dependency-check-report.html
 
       - name: Fail on High Vulnerabilities
         run: |
-          if grep -q '<severity>Critical</severity>\|<severity>High</severity>' target/dependency-check-report.xml; then
+          if grep -q '<severity>Critical</severity>\|<severity>High</severity>' reports/dependency-check-report.xml; then
             echo "High or Critical vulnerabilities found!"
             exit 1
           fi
+
+    
 
       # 登录 Docker 并推送镜像
       - name: Log in to Docker Hub
