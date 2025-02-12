@@ -28,14 +28,15 @@ jobs:
 
       # SAST配置：SpotBugs + Find Security Bugs
       - name: Run SpotBugs Analysis
-        run: mvn spotbugs:check || true
+#        run: mvn spotbugs:check || true
+        run: mvn spotbugs:spotbugs
 
       - name: Upload SpotBugs Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: spotbugs-report
-          path: target/spotbugs.xml
+          path: target/spotbugsXml.xml
 
       - name: Fail on SpotBugs High Priority Issues
         run: |
