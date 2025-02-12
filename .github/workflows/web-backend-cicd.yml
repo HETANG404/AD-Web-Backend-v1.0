@@ -38,12 +38,29 @@ jobs:
           name: spotbugs-report
           path: target/spotbugsXml.xml
 
-      - name: Fail on SpotBugs High Priority Issues
+      - name: Check for High Priority Issues in SpotBugs Report
         run: |
-          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
-            echo "High priority issues found by SpotBugs!"
+          if grep -q '<BugInstance[^>]* priority="1"' target/spotbugsXml.xml; then
+            echo "❌ High priority issues found by SpotBugs!"
+            grep '<BugInstance[^>]* priority="1"' target/spotbugsXml.xml
             exit 1
+          else
+            echo "✅ No high priority issues found by SpotBugs."
           fi
+
+      - name: Build and Package Spring Boot Application
+        run: mvn clean package -DskipTests
+
+      - name: Deploy Application
+        run: |
+          echo "Deploying Spring Boot application..."
+
+#      - name: Fail on SpotBugs High Priority Issues
+#        run: |
+#          if grep -q '<BugInstance.*priority="1"' target/spotbugsXml.xml; then
+#            echo "High priority issues found by SpotBugs!"
+#            exit 1
+#          fi
 
       # 缓存 NVD 数据库
       # - name: Cache OWASP Dependency-Check Data
