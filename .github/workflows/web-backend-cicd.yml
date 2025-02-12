@@ -24,7 +24,7 @@ jobs:
 
       # 先进行 Maven 构建
       - name: Build with Maven
-        run: mvn clean verify -DskipTests
+        run: mvn clean package -DskipTests
 
       # SAST配置：SpotBugs + Find Security Bugs
       - name: Run SpotBugs Analysis
@@ -102,4 +102,4 @@ jobs:
             #docker pull web-backend:latest
             docker run -d --name web-backend -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
             # docker run -d --name web-backend -p 5000:5000 --restart always web-backend:latest
-            # docker start web-backend:latest
+            # docker start web-backend
