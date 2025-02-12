@@ -113,9 +113,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.example.Application</mainClass>
+                    <mainClass>sg.edu.nus.adproject.AdProjectApplication</mainClass>
                 </configuration>
             </plugin>
+
 
 
 

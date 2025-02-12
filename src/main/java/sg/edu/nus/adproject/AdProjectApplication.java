@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "sg.edu.nus.adproject") //
 public class AdProjectApplication {
 
     public static void main(String[] args) {
