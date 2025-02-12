@@ -2,6 +2,7 @@ package sg.edu.nus.adproject.Controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.adproject.Model.Admin;
@@ -35,19 +36,35 @@ public class AdminController {
 
         Map<String, Object> response = new HashMap<>();
 
-        // Check if the username exists
-        if (!adminService.userExists(username)) {
+        if (username == null || username.trim().isEmpty()) {
             response.put("success", false);
-            response.put("message", "Username does not exist!");
-            return ResponseEntity.status(401).body(response);
+            response.put("message", "Username is required");
+            return ResponseEntity.status(400).body(response);
         }
 
-        // Check if the password is correct
-        if (!adminService.authenticate(username, password)) {
+        if (password == null || password.trim().isEmpty()) {
             response.put("success", false);
-            response.put("message", "Incorrect password!");
-            return ResponseEntity.status(401).body(response);
+            response.put("message", "Password is required");
+            return ResponseEntity.status(400).body(response);
         }
+
+
+        boolean userExists = adminService.userExists(username);
+        boolean authenticated = adminService.authenticate(username, password);
+
+
+        if (!authenticated || !userExists) {
+            if (authenticated) {
+                response.put("success", false);
+                response.put("message", "Incorrect password!");  // 统一错误信息
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            } else if (userExists) {
+                response.put("success", false);
+                response.put("message", "Incorrect password!");  // 统一错误信息
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+        }
+
 
         // Login successful
         session.setAttribute("loggedInUser", username);
@@ -70,67 +87,3 @@ public class AdminController {
     }
 }
 //......
-
-/**
- * Check if the admin is logged in
- */
-//@GetMapping("/status")
-//public ResponseEntity<Map<String, Object>> checkLoginStatus(HttpSession session) {
-//    Map<String, Object> response = new HashMap<>();
-//
-//    if (session.getAttribute("loggedInUser") != null) {
-//        response.put("loggedIn", true);
-//        response.put("username", session.getAttribute("loggedInUser"));
-//    } else {
-//        response.put("loggedIn", false);
-//        response.put("message", "User not logged in.");
-//    }
-//
-//    return ResponseEntity.ok(response);
-//}
-
-
-//...................
-    /**
-     * Login API
-     */
-//    @PostMapping("/login")
-//    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> request) {
-//        String username = request.get("username");
-//        String password = request.get("password");
-//
-//        boolean authenticated = adminService.authenticate(username, password);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        if (authenticated) {
-//            response.put("success", true);
-//            response.put("redirectUrl", "/");
-//            return ResponseEntity.ok(response);
-//        } else {
-//            response.put("success", false);
-//            response.put("message", "Invalid username or password.");
-//            return ResponseEntity.status(401).body(response);
-//        }
-//    }
-//
-//    /**
-//     * Logout API
-//     */
-//    @PostMapping("/logout")
-//    public ResponseEntity<Map<String, Object>> logout() {
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("success", true);
-//        response.put("message", "Logged out successfully.");
-//        return ResponseEntity.ok(response);
-//    }
-//}
-
-//    @PostMapping("/login")
-//    public ResponseEntity<Admin> login(@RequestBody Map<String, String> credentials) {
-//        String username = credentials.get("username");
-//        String password = credentials.get("password");
-//
-//        Admin admin = adminService.authenticate
-//
-//    }
-

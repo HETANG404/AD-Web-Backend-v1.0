@@ -36,17 +36,18 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public boolean authenticate(String username, String password) {
-        Optional<Admin> admin = adminRepository.findByUsername(username);
-
-        // Compare password directly (NOT recommended for production)
-        return admin.isPresent() && admin.get().getPassword().equals(password);
+        Optional<Admin> adminOpt = adminRepository.findByUsername(username);
+        if (adminOpt.isPresent()) {
+            Admin admin = adminOpt.get();
+            // 比对密码，这里可以进行加密处理（使用 BCrypt 等）
+            return admin.getPassword().equals(password); // 简单比对（实际应用应加密）
+        }
+        return false;
     }
 
     @Override
     public boolean userExists(String username) {
-        Optional<Admin> user = adminRepository.findByUsername(username);
-//        System.out.println("Checking if user exists: " + username + " -> " + user.isPresent());
-        return user.isPresent();
+        return adminRepository.findByUsername(username).isPresent(); // 检查管理员是否存在
     }
 
 

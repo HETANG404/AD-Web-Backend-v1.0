@@ -21,23 +21,3 @@ public interface AdminService {
 
 //    public List<Admin> getAllAdmins();
 }
-
-//    @Autowired
-//    private AdminRepository adminRepository;
-//
-//    /**
-//     * Authenticate admin user without password encryption
-//     */
-//    public boolean authenticate(String username, String password) {
-//        Optional<Admin> admin = adminRepository.findByUsername(username);
-//
-//        // Compare password directly (NOT recommended for production)
-//        return admin.isPresent() && admin.get().getPassword().equals(password);
-//    }
-//
-//
-//    public List<Admin> getAllAdmins(){
-//        return adminRepository.findAll();
-//
-//    }
-//}
