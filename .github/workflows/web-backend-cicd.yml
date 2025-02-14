@@ -74,34 +74,34 @@ jobs:
 
 
 
-      # 缓存 NVD 数据库
-      # - name: Cache OWASP Dependency-Check Data
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.dependency-check
-      #     key: dependency-check-${{ runner.os }}-${{ hashFiles('**/dependency-check.properties') }}
-      #     restore-keys: |
-      #       dependency-check-${{ runner.os }}-
+#       缓存 NVD 数据库
+      - name: Cache OWASP Dependency-Check Data
+        uses: actions/cache@v3
+        with:
+          path: ~/.dependency-check
+          key: dependency-check-${{ runner.os }}-${{ hashFiles('**/dependency-check.properties') }}
+          restore-keys: |
+            dependency-check-${{ runner.os }}-
 
-      # SAST配置：依赖检查
-      # - name: Run Dependency Check
-      #   run: |
-      #     mkdir -p reports
-      #     mvn org.owasp:dependency-check-maven:check -Dformat=ALL -Dout=reports/
+  #       SAST配置：依赖检查
+      - name: Run Dependency Check
+        run: |
+          mkdir -p reports
+          mvn org.owasp:dependency-check-maven:check -Dformat=ALL -Dout=reports/
 
-      # - name: Upload Dependency Check Report
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: dependency-check-report
-      #     path: reports/dependency-check-report.xml
+      - name: Upload Dependency Check Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: reports/dependency-check-report.xml
 
-      # - name: Fail on High Vulnerabilities
-      #   run: |
-      #     if grep -q '<severity>Critical</severity>\|<severity>High</severity>' reports/dependency-check-report.xml; then
-      #       echo "High or Critical vulnerabilities found!"
-      #       exit 1
-      #     fi
+      - name: Fail on High Vulnerabilities
+        run: |
+          if grep -q '<severity>Critical</severity>\|<severity>High</severity>' reports/dependency-check-report.xml; then
+            echo "High or Critical vulnerabilities found!"
+            exit 1
+          fi
 
 
 
@@ -142,3 +142,21 @@ jobs:
             docker run -d --name web-backend -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/web-backend:latest
             # docker run -d --name web-backend -p 5000:5000 --restart always web-backend:latest
             # docker start web-backend
+
+
+##DAST
+  dast_scan:
+    needs: deploy  # 等待 EC2 部署完成
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run OWASP ZAP DAST Scan
+        run: |
+          docker run -t owasp/zap2docker-stable zap-api-scan.py \
+          -t http://47.130.87.217:5000/v3/api-docs \
+          -f openapi -r zap_report.html || true
+
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: zap_report.html

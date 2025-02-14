@@ -108,14 +108,6 @@
 
     <build>
         <plugins>
-            <!-- Spring Boot Plugin -->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--            </plugin>-->
-<!--            1123-->
-
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -123,22 +115,6 @@
                     <mainClass>sg.edu.nus.adproject.AdProjectApplication</mainClass>
                 </configuration>
             </plugin>
-
-
-
-
-            <!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <excludes>-->
-<!--                        <exclude>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                        </exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
 
             <!-- SpotBugs Plugin -->
             <plugin>
