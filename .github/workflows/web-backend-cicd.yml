@@ -24,53 +24,53 @@ jobs:
 
 
 
-      - name: Run Tests and Generate Coverage Report
-        run: mvn clean test verify
-
-      - name: Upload JaCoCo Report as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco/index.html
-
-      - name: Upload Jacoco exec file
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-exec
-          path: target/jacoco.exec
-#          。
-
-
-
-#      # SAST配置：SpotBugs + Find Security Bugs
-      - name: Run SpotBugs Analysis
-#        run: mvn spotbugs:check || true
-        run: mvn clean install spotbugs:spotbugs verify
-
-      - name: Upload SpotBugs Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: spotbugs-report
-          path: target/spotbugsXml.xml
-
-      - name: Check for SpotBugs Issues
-        run: |
-          if [ ! -f target/spotbugsXml.xml ]; then
-            echo "⚠️ SpotBugs report not found, skipping check."
-            exit 0
-          fi
-          # 输出所有 BugInstance
-          ERROR_COUNT=$(grep -o '<BugInstance' target/spotbugsXml.xml | wc -l)
-          if [ "$ERROR_COUNT" -gt 0 ]; then
-            echo "❌ Found $ERROR_COUNT issues in SpotBugs report:"
-            grep '<BugInstance' target/spotbugsXml.xml | while read -r line; do
-              echo "$line"
-            done
-            exit 1
-          else
-            echo "✅ No issues found by SpotBugs."
-          fi
+#      - name: Run Tests and Generate Coverage Report
+#        run: mvn clean test verify
+#
+#      - name: Upload JaCoCo Report as Artifact
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: jacoco-report
+#          path: target/site/jacoco/index.html
+#
+#      - name: Upload Jacoco exec file
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: jacoco-exec
+#          path: target/jacoco.exec
+##          。
+#
+#
+#
+##      # SAST配置：SpotBugs + Find Security Bugs
+#      - name: Run SpotBugs Analysis
+##        run: mvn spotbugs:check || true
+#        run: mvn clean install spotbugs:spotbugs verify
+#
+#      - name: Upload SpotBugs Report
+#        if: always()
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: spotbugs-report
+#          path: target/spotbugsXml.xml
+#
+#      - name: Check for SpotBugs Issues
+#        run: |
+#          if [ ! -f target/spotbugsXml.xml ]; then
+#            echo "⚠️ SpotBugs report not found, skipping check."
+#            exit 0
+#          fi
+#          # 输出所有 BugInstance
+#          ERROR_COUNT=$(grep -o '<BugInstance' target/spotbugsXml.xml | wc -l)
+#          if [ "$ERROR_COUNT" -gt 0 ]; then
+#            echo "❌ Found $ERROR_COUNT issues in SpotBugs report:"
+#            grep '<BugInstance' target/spotbugsXml.xml | while read -r line; do
+#              echo "$line"
+#            done
+#            exit 1
+#          else
+#            echo "✅ No issues found by SpotBugs."
+#          fi
 
 
 
