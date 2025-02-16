@@ -178,7 +178,7 @@ public class UserController {
         // Generate a random password (you can change the logic to make it more secure)
         String newPassword = generateRandomPassword();
         String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(newPassword);
+        user.setPassword(encodedPassword);
         userService.saveUser(user);
 
         // Send the new password to the user's email
