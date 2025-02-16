@@ -3,6 +3,7 @@ package sg.edu.nus.adproject.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import sg.edu.nus.adproject.Model.User;
 import sg.edu.nus.adproject.Service.MailService;
@@ -22,6 +23,8 @@ import java.util.Random;
 public class UserController {
 
     private static final Random RANDOM = new Random();
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     private UserService userService;
@@ -174,6 +177,7 @@ public class UserController {
 
         // Generate a random password (you can change the logic to make it more secure)
         String newPassword = generateRandomPassword();
+        String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(newPassword);
         userService.saveUser(user);
 
